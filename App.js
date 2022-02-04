@@ -6,8 +6,10 @@ import { View, Text } from "react-native";
 
 // COMPONENTS
 import LoginScreen from "./components/auth/Login";
+import LandingScreen from "./components/auth/Landing";
 import RegisterScreen from "./components/auth/Register";
 import MainScreen from "./components/Main";
+import AddScreen from "./components/main/Add";
 
 // Redux
 import { Provider, store } from "./lib/redux";
@@ -50,19 +52,14 @@ export default class App extends Component {
 		if (!loggedIn) {
 			return (
 				<NavigationContainer>
-					<Stack.Navigator initialRouteName="Login">
+					<Stack.Navigator initialRouteName="Landing">
 						<Stack.Screen
-							name="Login"
-							component={LoginScreen}
-							navigation={Stack}
+							name="Landing"
+							component={LandingScreen}
 							options={{ headerShown: false }}
 						/>
-						<Stack.Screen
-							name="Register"
-							component={RegisterScreen}
-							navigation={Stack}
-							options={{ headerShown: false }}
-						/>
+						<Stack.Screen name="Login" component={LoginScreen} />
+						<Stack.Screen name="Register" component={RegisterScreen} />
 					</Stack.Navigator>
 				</NavigationContainer>
 			);
@@ -70,7 +67,16 @@ export default class App extends Component {
 
 		return (
 			<Provider store={store}>
-				<MainScreen />;
+				<NavigationContainer>
+					<Stack.Navigator initialRouteName="Main">
+						<Stack.Screen
+							name="Main"
+							component={MainScreen}
+							options={{ headerShown: false }}
+						/>
+						<Stack.Screen name="Add" component={AddScreen} />
+					</Stack.Navigator>
+				</NavigationContainer>
 			</Provider>
 		);
 	}

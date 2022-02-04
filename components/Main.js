@@ -1,27 +1,72 @@
 import React, { Component } from "react";
-import { View, Text } from "react-native";
+import { createMaterialBottomTabNavigator } from "@react-navigation/material-bottom-tabs";
+import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import { fetchUser } from "../redux/actions/index";
 
+// Components
+import FeedScreen from "../components/main/Feed";
+import ProfileScreen from "../components/main/Profile";
+
+const Tab = createMaterialBottomTabNavigator();
+const EmptyScreen = () => {
+	return null;
+};
 export class Main extends Component {
 	componentDidMount() {
 		this.props.fetchUser();
 	}
 
 	render() {
-		const { currentUser } = this.props;
-
-		console.log(currentUser);
-		if (currentUser === undefined || currentUser === null) {
-			return <View>No one is logged in</View>;
-		}
-
 		return (
-			<View style={{ flex: 1, justifyContent: "center" }}>
-				<Text>{currentUser.name} is logged in</Text>
-			</View>
+			<Tab.Navigator initialRouteName="Feed" labeled={false}>
+				<Tab.Screen
+					name="Feed"
+					component={FeedScreen}
+					options={{
+						tabBarIcon: ({ color, size = 26 }) => (
+							<MaterialCommunityIcons name="home" color={color} size={size} />
+						),
+						headerShown: false,
+					}}
+				/>
+				<Tab.Screen
+					name="AddContainer"
+					component={EmptyScreen}
+					listeners={({ navigation }) => ({
+						tabPress: (event) => {
+							event.preventDefault();
+							navigation.navigate("Add");
+						},
+					})}
+					options={{
+						tabBarIcon: ({ color, size = 26 }) => (
+							<MaterialCommunityIcons
+								name="plus-box"
+								color={color}
+								size={size}
+							/>
+						),
+						headerShown: false,
+					}}
+				/>
+				<Tab.Screen
+					name="Profile"
+					component={ProfileScreen}
+					options={{
+						tabBarIcon: ({ color, size = 26 }) => (
+							<MaterialCommunityIcons
+								name="account-circle"
+								color={color}
+								size={size}
+							/>
+						),
+						headerShown: false,
+					}}
+				/>
+			</Tab.Navigator>
 		);
 	}
 }
