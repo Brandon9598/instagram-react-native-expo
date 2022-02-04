@@ -11,16 +11,15 @@ export default class Login extends Component {
 		};
 
 		this.signIn = this.signIn.bind(this);
+		this.signOut = this.signOut.bind(this);
 	}
 
 	signIn() {
-		const { email, password, name } = this.state;
-		auth
-			.signInWithEmailAndPassword(email, password)
-			.then((results) => {
-				console.log(results);
-			})
-			.catch((err) => console.log(err));
+		const { email, password } = this.state;
+		auth.signInWithEmailAndPassword(email, password);
+	}
+	signOut() {
+		auth.signOut();
 	}
 
 	render() {
@@ -35,7 +34,8 @@ export default class Login extends Component {
 					secureTextEntry={true}
 					onChangeText={(password) => this.setState({ password })}
 				/>
-				<Button onPress={() => this.signIn()} title="sign up" />
+				<Button onPress={() => this.signIn()} title="sign in" />
+				<Button onPress={() => this.signOut()} title="sign out" />
 			</View>
 		);
 	}

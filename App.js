@@ -1,24 +1,27 @@
-import { StatusBar } from "expo-status-bar";
-import { StyleSheet, Text, View } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
-import LandingScreen from "./components/auth/Landing";
-import RegisterScreen from "./components/auth/Register";
-const Stack = createStackNavigator();
-
 import React, { Component } from "react";
 import { auth } from "./lib/firebase";
+import { View, Text } from "react-native";
 
+// COMPONENTS
+import LoginScreen from "./components/auth/Login";
+import RegisterScreen from "./components/auth/Register";
+import MainScreen from "./components/Main";
+
+// Redux
+import { Provider, store } from "./lib/redux";
+
+const Stack = createStackNavigator();
 export default class App extends Component {
 	constructor(props) {
 		super(props);
 		this.state = {
 			loaded: false,
-			loggedIn: false,
 		};
 	}
 
-	compondentDidMount() {
+	componentDidMount() {
 		auth.onAuthStateChanged((user) => {
 			if (!user) {
 				this.setState({
@@ -47,10 +50,10 @@ export default class App extends Component {
 		if (!loggedIn) {
 			return (
 				<NavigationContainer>
-					<Stack.Navigator initialRouteName="Landing">
+					<Stack.Navigator initialRouteName="Login">
 						<Stack.Screen
-							name="Landing"
-							component={LandingScreen}
+							name="Login"
+							component={LoginScreen}
 							navigation={Stack}
 							options={{ headerShown: false }}
 						/>
@@ -66,9 +69,9 @@ export default class App extends Component {
 		}
 
 		return (
-			<View style={{ flex: 1, justifyContent: "center" }}>
-				<Text>Logged In</Text>
-			</View>
+			<Provider store={store}>
+				<MainScreen />;
+			</Provider>
 		);
 	}
 }

@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { View, Button, TextInput } from "react-native";
-import { auth } from "../../lib/firebase";
+import { auth, firestore } from "../../lib/firebase";
 export default class Register extends Component {
 	constructor(props) {
 		super(props);
@@ -19,6 +19,10 @@ export default class Register extends Component {
 		auth
 			.createUserWithEmailAndPassword(email, password)
 			.then((results) => {
+				firestore.collection("users").doc(auth.currentUser.uid).set({
+					name,
+					email,
+				});
 				console.log(results);
 			})
 			.catch((err) => console.log(err));
