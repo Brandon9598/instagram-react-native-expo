@@ -3,7 +3,7 @@ import { StyleSheet, Text, View, Button, Image } from "react-native";
 import { Camera } from "expo-camera";
 import * as ImagePicker from "expo-image-picker";
 
-function Add() {
+function Add({ navigation }) {
 	const [hasPermission, setHasPermission] = useState(null);
 	const [camera, setCamera] = useState(null);
 	const [image, setImage] = useState(null);
@@ -33,8 +33,6 @@ function Add() {
 			aspect: [1, 1],
 			quality: 1,
 		});
-
-		console.log(result);
 
 		if (!result.cancelled) {
 			setImage(result.uri);
@@ -75,6 +73,10 @@ function Add() {
 				}}
 			/>
 			<Button title="Pick Image From Gallery" onPress={() => pickImage()} />
+			<Button
+				title="Save"
+				onPress={() => navigation.navigate("Save", { image })}
+			/>
 			{image && (
 				<Image
 					source={{
