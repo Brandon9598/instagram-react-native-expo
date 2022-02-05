@@ -78,6 +78,7 @@ export function fetchUsersData(uid) {
 					if (snapshot.exists) {
 						let user = snapshot.data();
 						user.uid = snapshot.id;
+						console.log("users", user);
 						dispatch({ type: USERS_DATA_STATE_CHANGE, user });
 						dispatch(fetchUsersFollowingPosts(user.uid));
 					} else {
