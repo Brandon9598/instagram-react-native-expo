@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { StyleSheet, View, Text, Image, FlatList } from "react-native";
+import { StyleSheet, View, Text, Image, FlatList, Button } from "react-native";
 
 import { connect } from "react-redux";
 import { auth, firestore } from "../../lib/firebase";
@@ -7,10 +7,10 @@ import { auth, firestore } from "../../lib/firebase";
 function Profile(props) {
 	const [userPosts, setUserPosts] = useState([]);
 	const [user, setUser] = useState(null);
+	const [following, setFollowing] = useState(false);
 
 	useEffect(() => {
 		const { currentUser, posts } = props;
-		console.log("params", props.route);
 		if (props.route.params?.uid === auth.currentUser?.uid) {
 			setUser(currentUser);
 			setUserPosts(posts);
@@ -48,16 +48,49 @@ function Profile(props) {
 					setUserPosts([]);
 				});
 		}
-	}, [props.route.params.uid]);
+
+		if (props.following.indexOf(props.route.params.uid) > -1) {
+			setFollowing(true);
+		} else {
+			setFollowing(false);
+		}
+	}, [props.route.params.uid, props.following]);
+
+	const onUnFollow = () => {
+		firestore
+			.collection("following")
+			.doc(auth.currentUser.uid)
+			.collection("userFollowing")
+			.doc(props.route.params.uid)
+			.delete();
+	};
+	const onFollow = () => {
+		firestore
+			.collection("following")
+			.doc(auth.currentUser.uid)
+			.collection("userFollowing")
+			.doc(props.route.params.uid)
+			.set({});
+	};
 
 	if (user === null) {
 		return <View />;
 	}
+
 	return (
 		<View style={styles.container}>
 			<View style={styles.containerInfo}>
 				<Text>{user?.name}</Text>
 				<Text>{user?.email}</Text>
+				{props.route.params.uid !== auth.currentUser.uid && (
+					<View>
+						{following ? (
+							<Button title="Following" onPress={() => onUnFollow()} />
+						) : (
+							<Button title="Follow" onPress={() => onFollow()} />
+						)}
+					</View>
+				)}
 			</View>
 
 			<View style={styles.containerGallery}>
@@ -98,6 +131,7 @@ const styles = StyleSheet.create({
 const mapStateToProps = (store) => ({
 	currentUser: store.userState.currentUser,
 	posts: store.userState.posts,
+	following: store.userState.following,
 });
 
 export default connect(mapStateToProps, null)(Profile);

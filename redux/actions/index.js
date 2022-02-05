@@ -1,7 +1,8 @@
 import { firestore, auth } from "../../lib/firebase";
 import {
 	USER_STATE_CHANGE,
-	USER_POSTS_STATE_CHANGED,
+	USER_POSTS_STATE_CHANGE,
+	USER_FOLLOWING_STATE_CHANGE,
 } from "../constants/index";
 
 export function fetchUser() {
@@ -38,10 +39,25 @@ export function fetchUserPosts() {
 					const id = doc.id;
 					return { id, ...data };
 				});
-				dispatch({ type: USER_POSTS_STATE_CHANGED, posts });
+				dispatch({ type: USER_POSTS_STATE_CHANGE, posts });
 			})
 			.catch((err) => {
-				dispatch({ type: USER_POSTS_STATE_CHANGED, currentUser: [] });
+				dispatch({ type: USER_POSTS_STATE_CHANGE, currentUser: [] });
+			});
+	};
+}
+
+export function fetchUserFollowing() {
+	return (dispatch) => {
+		firestore
+			.collection("following")
+			.doc(auth.currentUser.uid)
+			.collection("userFollowing")
+			.onSnapshot((snapshot) => {
+				let following = snapshot.docs.map((doc) => {
+					return doc.id;
+				});
+				dispatch({ type: USER_FOLLOWING_STATE_CHANGE, following });
 			});
 	};
 }
