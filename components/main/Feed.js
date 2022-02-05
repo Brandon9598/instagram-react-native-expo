@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import { StyleSheet, View, Text, Image, FlatList, Button } from "react-native";
 
 import { connect } from "react-redux";
-import { auth, firestore } from "../../lib/firebase";
 
 function Feed(props) {
 	const [posts, setPosts] = useState([]);

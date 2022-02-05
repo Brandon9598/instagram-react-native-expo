@@ -73,6 +73,10 @@ function Profile(props) {
 			.set({});
 	};
 
+	const onLogout = () => {
+		auth.signOut();
+	};
+
 	if (user === null) {
 		return <View />;
 	}
@@ -82,7 +86,7 @@ function Profile(props) {
 			<View style={styles.containerInfo}>
 				<Text>{user?.name}</Text>
 				<Text>{user?.email}</Text>
-				{props.route.params.uid !== auth.currentUser.uid && (
+				{props.route.params.uid !== auth.currentUser.uid ? (
 					<View>
 						{following ? (
 							<Button title="Following" onPress={() => onUnFollow()} />
@@ -90,6 +94,8 @@ function Profile(props) {
 							<Button title="Follow" onPress={() => onFollow()} />
 						)}
 					</View>
+				) : (
+					<Button title="Logout" onPress={() => onLogout()} />
 				)}
 			</View>
 
